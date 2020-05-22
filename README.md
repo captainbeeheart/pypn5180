@@ -3,7 +3,7 @@ Python interface for NFC-15693 using NXP pn5180
 
 Running on linux PC with USB/FTDI interface with python3, or on raspberry-pi with python2.
 
-## Linuc PC
+## Linux PC
 
 Need pyftdi installed: "pip3 install pyftdi"
 refer to  https://eblot.github.io/pyftdi/installation.html for complete install.
@@ -11,6 +11,10 @@ refer to  https://eblot.github.io/pyftdi/installation.html for complete install.
 Connection between ftdi2232 and pn5180 boards
 
 <img src="./img/ftdi2232.png"> <img src="./img/pn5180.png">
+
+Configuration switch between portA and portB to be done in pypn5180/pypn5180hal.py 
+    Port A: ftdi://ftdi:2232h/1
+    Port B: ftdi://ftdi:2232h/2
 
 | NXP5180 |    FTDI 2232 |
 |---------|--------------|

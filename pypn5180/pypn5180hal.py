@@ -11,6 +11,9 @@ else:
 try:
     from pyftdi import spi
     SPI_DEVICE = "FTDI"
+    # Configure FTDI PORT A or PORT B here:
+    # Port A: ftdi://ftdi:2232h/1
+    # Port B: ftdi://ftdi:2232h/2
     FTDI_ID = 'ftdi://ftdi:2232h/2'
 except:
     try:
