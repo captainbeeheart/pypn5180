@@ -3,21 +3,26 @@ Python interface for NFC-15693 using NXP pn5180
 
 Running on linux PC with USB/FTDI interface with python3, or on raspberry-pi with python2.
 
-## Linux PC
+## Linux PC setup
 
-Dependencies: "pip3 install pyftdi setuptools"
+Dependencies: 
+
+```pip3 install pyftdi setuptools```
+
 refer to  https://eblot.github.io/pyftdi/installation.html for complete install.
 
-then: "sudo python3 setup.py install"
+then: 
+
+```sudo python3 setup.py install``` 
 
 
 Connection between ftdi2232 and pn5180 boards
 
 <img src="./img/ftdi2232.png"> <img src="./img/pn5180.png">
 
-Configuration switch between portA and portB to be done in pypn5180/pypn5180hal.py 
-    Port A: ftdi://ftdi:2232h/1
-    Port B: ftdi://ftdi:2232h/2
+Configuration switch between portA and portB to be done in **pypn5180/pypn5180hal.py**:
+- **Port A: ftdi://ftdi:2232h/1**
+- **Port B: ftdi://ftdi:2232h/2**
 
 | NXP5180 |    FTDI 2232 |
 |---------|--------------|
@@ -35,7 +40,7 @@ Configuration switch between portA and portB to be done in pypn5180/pypn5180hal.
 |AUX      |    -         |
 |REQ      |    -         |
 
-## Raspberry-pi
+## Raspberry-pi setup
 
 need spidev-3.2 at least installed on the raspberry
 
@@ -56,7 +61,28 @@ need spidev-3.2 at least installed on the raspberry
 |REQ      |    -         |
 
 
+## Usage
 
+``` bash
+# Read FRAM block 5
+python3 pypn5180_15693.py READBLK -o 5
+
+# Write FRAM block 10 with 'A1A2A3B4B5B6C7C8'
+python3 pypn5180_15693.py WRITEBLK -o 5 -d A1A2A3B4B5B6C7C8
+ 
+# Send a custom or proprietary command 0xA0, with manusacturer id 0x07 and data 'A1A2A3B4B5B6C7C8'
+python3 pypn5180_15693.py CUSTOM -c A0 -m 07 -d A1A2A3B4B5B6C7C8
+
+# Maintain power on for a sensor by RF without sending data
+python3 pypn5180_15693.py POWER
+
+# Dump a complete FRAM content, output file 'UUID-Date.dat' is created 
+python3 pypn5180_15693.py DUMP
+
+# FreestyleLibre Dump data FRAM part (output file: FREE-UUID-Date.dat)
+python3 pypn5180_15693.py FREEDUMP
+
+ ```
 
 
 
