@@ -1,6 +1,6 @@
 from . import pypn5180
 import binascii
-
+import collections
 """
 Implementation of ISO-IEC-15693 norm for PN5180 chipset
 """
@@ -42,6 +42,8 @@ class iso_iec_15693(object):
         0x14:'The specified block was not successfully locked',
         0xA7:'CUSTOM ERROR 0xA7'
     }
+    # Avoid unhandled error codes crash:
+    ERROR_CODE = collections.defaultdict(lambda:0,ERROR_CODE)
 
     def __init__(self):
         print("Connecting to PN5180 device...")
