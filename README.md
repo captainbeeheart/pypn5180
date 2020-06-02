@@ -67,10 +67,10 @@ need spidev-3.2 at least installed on the raspberry
 # Read FRAM block 5
 python3 pypn5180_15693.py READBLK -o 5
 
-# Write FRAM block 10 with 'A1A2A3B4B5B6C7C8'
-python3 pypn5180_15693.py WRITEBLK -o 5 -d A1A2A3B4B5B6C7C8
+# Write FRAM block 16 with '0xA1 0xA2 0xA3 0xB4 0xB5 0xB6 0xC7 0xC8'
+python3 pypn5180_15693.py WRITEBLK -o 16 -d A1A2A3B4B5B6C7C8
  
-# Send a custom or proprietary command 0xA0, with manusacturer id 0x07 and data 'A1A2A3B4B5B6C7C8'
+# Send a custom or proprietary command 0xA0, with manusacturer id 0x07 and data '0xA1 0xA2 0xA3 0xB4 0xB5 0xB6 0xC7 0xC8'
 python3 pypn5180_15693.py CUSTOM -c A0 -m 07 -d A1A2A3B4B5B6C7C8
 
 # Maintain power on for a sensor by RF without sending data
