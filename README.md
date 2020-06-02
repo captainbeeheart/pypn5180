@@ -5,8 +5,11 @@ Running on linux PC with USB/FTDI interface with python3, or on raspberry-pi wit
 
 ## Linux PC
 
-Need pyftdi installed: "pip3 install pyftdi"
+Dependencies: "pip3 install pyftdi setuptools"
 refer to  https://eblot.github.io/pyftdi/installation.html for complete install.
+
+then: "sudo python3 setup.py install"
+
 
 Connection between ftdi2232 and pn5180 boards
 
