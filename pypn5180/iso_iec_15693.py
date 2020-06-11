@@ -105,7 +105,6 @@ class iso_iec_15693(object):
             frame.extend(uid)
             # TODO : Add uid bit in flags
         frame.append(blockNumber)
-        print("Send frame: %r" %binascii.hexlify(bytes(frame)))
         flags, data = self.pn5180.transactionIsoIec15693(frame)
         error = self.getError(flags, data)
         return data, error
