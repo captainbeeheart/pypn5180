@@ -11,10 +11,7 @@ else:
 try:
     from pyftdi import spi
     SPI_DEVICE = "FTDI"
-    # Configure FTDI PORT A or PORT B here:
-    # Port A: ftdi://ftdi:2232h/1
-    # Port B: ftdi://ftdi:2232h/2
-    FTDI_ID = 'ftdi://ftdi:2232h/2'
+
 except:
     try:
         import spidev
@@ -28,7 +25,7 @@ except:
 
 class _spi():
 
-    def __init__(self, bus=0, device=0, speed=1e6):
+    def __init__(self, bus=0, device=0, speed=1e6, ftdi_port="PORT_A"):
         if SPI_DEVICE is "RASPI":
             self.device = spidev.SpiDev()
             self.device.open(bus, device)
@@ -36,11 +33,19 @@ class _spi():
             self.xfer = self.device.xfer
 
         elif SPI_DEVICE is "FTDI":
+            # Configure FTDI PORT A or PORT B here:
+            # Port A: ftdi://ftdi:2232h/1
+            # Port B: ftdi://ftdi:2232h/2
+            if ftdi_port == "PORT_A":
+                ftdi_devid = "ftdi://ftdi:2232h/1"
+            else:
+                ftdi_devid = "ftdi://ftdi:2232h/2"
+
             self.device = spi.SpiController()
-            self.device.configure(FTDI_ID)
+            self.device.configure(ftdi_devid)
             self.slave = self.device.get_port(cs=0, freq=speed, mode=0)
             self.xfer = self.ftdi_xfer
-            print("Conected to FTDI SPI %s" %FTDI_ID)
+            print("Conected to FTDI SPI %s" %ftdi_devid)
         else:
             self.device = None            
             self.xfer = None
@@ -182,10 +187,10 @@ class PN5180_HIL(object):
     """
     Debug values : PN5180_HIL, PN5180
     """
-    def __init__(self, bus=0, device=0, speed=50000, debug="PN5180_HIL"):
+    def __init__(self, bus=0, device=0, speed=50000, ftdi_port="PORT_A", debug="PN5180_HIL"):
         try:
             self.debug = debug
-            self.spi = _spi(bus, device, speed)
+            self.spi = _spi(bus, device, speed, ftdi_port)
 
         except IOError as exc:
             print("Error opening SPI device : %r" %exc)

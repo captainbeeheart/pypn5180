@@ -62,6 +62,7 @@ def parseInputs():
     parser.add_argument("-d","--data", type=str, default="", help="Hexlified datablock to write (8 bytes, requred for WRITEBLK, CUSTOM)")
     parser.add_argument("-c", "--custom", type=str, default="A0", help="One hex byte for CUSTOM command code ex: A0")
     parser.add_argument("-m", "--mfCode", type=str, default="07", help="Manufacturer Code ID")
+    parser.add_argument("-f", "--ftdi_port", type=str, default="PORT_A", help="FTDI 2232 port 'PORT_A, PORT_B'")
     return parser.parse_args()
 
 
@@ -69,7 +70,7 @@ if __name__ == "__main__":
 
     args = parseInputs()
 
-    isoIec15693 = iso_iec_15693()
+    isoIec15693 = iso_iec_15693(args.ftdi_port)
     sys_info, errStr = isoIec15693.getSystemInformationCmd()
     serial = binascii.hexlify(bytes(sys_info[1:9])).decode('utf-8')
     print('[%s] SysInfo - chip serial: %r' %(errStr, serial))
@@ -97,7 +98,7 @@ if __name__ == "__main__":
         print("Sending Code 0x%x with %r" %(cmdCode,dataIn))
         data, errStr  = isoIec15693.customCommand(cmdCode, mfCode, dataIn)
         if "No Answer from tag" not in errStr: 
-            print("CMD %x, dataIn: %s : [%s] Data: %r" %(cmdCode, dataIn, errStr, data))
+            print("CMD %x: [%s] Data: [%r] - [%s]" %(cmdCode, errStr, data, binascii.hexlify(data)))
         else:
             print("%s" %errStr)
 
