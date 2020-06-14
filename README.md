@@ -5,24 +5,66 @@ Running on linux PC with USB/FTDI interface with python3, or on raspberry-pi wit
 
 ## Linux PC setup
 
-Dependencies: 
+```bash
+sudo apt install python3-pip libusb-1.0 
+pip3 install pyftdi setuptools
 
-```pip3 install pyftdi setuptools```
+# create udev configuration file with following content:
 
-refer to  https://eblot.github.io/pyftdi/installation.html for complete install.
+  # /etc/udev/rules.d/11-ftdi.rules
+  # FT232AM/FT232BM/FT232R
+  SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6001", GROUP="plugdev", MODE="0664"
+  # FT2232C/FT2232D/FT2232H
+  SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6010", GROUP="plugdev", MODE="0664"
+  # FT4232/FT4232H
+  SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6011", GROUP="plugdev", MODE="0664"
+  # FT232H
+  SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6014", GROUP="plugdev", MODE="0664"
+  # FT230X/FT231X/FT234X
+  SUBSYSTEM=="usb", ATTR{idVendor}=="0403", ATTR{idProduct}=="6015", GROUP="plugdev", MODE="0664"
 
-then: 
+sudo udevadm control --reload-rules
+sudo udevadm trigger
+sudo adduser $USER plugdev
 
-```sudo python3 setup.py install``` 
+# Log out and in then unplug and plug FTDI usb.
+
+sudo python3 setup.py install
+``` 
+
+**Note:** refer to [https://eblot.github.io/pyftdi/installation.html]  for complete pyftdi install documentation.
+
+## Usage
+
+``` bash
+# Read FRAM block 5
+python3 pypn5180_15693.py READBLK -o 5
+
+# Write FRAM block 16 with '0xA1 0xA2 0xA3 0xB4 0xB5 0xB6 0xC7 0xC8'
+python3 pypn5180_15693.py WRITEBLK -o 16 -d A1A2A3B4B5B6C7C8
+ 
+# Send a custom or proprietary command 0xA0, with manusacturer id 0x07 and data '0xA1 0xA2 0xA3 0xB4 0xB5 0xB6 0xC7 0xC8'
+python3 pypn5180_15693.py CUSTOM -c A0 -m 07 -d A1A2A3B4B5B6C7C8
+
+# Maintain power on for a sensor by RF without sending data
+python3 pypn5180_15693.py POWER
+
+# Dump a complete FRAM content, output file 'UUID-Date.dat' is created 
+python3 pypn5180_15693.py DUMP
+
+# FreestyleLibre Dump data FRAM part (output file: FREE-UUID-Date.dat)
+python3 pypn5180_15693.py FREEDUMP
+
+ ```
 
 
-Connection between ftdi2232 and pn5180 boards
+## Connection between ftdi2232 and pn5180 boards
 
 <img src="./img/ftdi2232.png"> <img src="./img/pn5180.png">
 
-Configuration switch between portA and portB to be done in **pypn5180/pypn5180hal.py**:
-- **Port A: ftdi://ftdi:2232h/1**
-- **Port B: ftdi://ftdi:2232h/2**
+Configuration switch between portA and portB to be done with **-f PORT_x** command:
+- **PORT_A: ftdi://ftdi:2232h/1**
+- **PORT_B: ftdi://ftdi:2232h/2**
 
 | NXP5180 |    FTDI 2232 |
 |---------|--------------|
@@ -61,28 +103,7 @@ need spidev-3.2 at least installed on the raspberry
 |REQ      |    -         |
 
 
-## Usage
 
-``` bash
-# Read FRAM block 5
-python3 pypn5180_15693.py READBLK -o 5
-
-# Write FRAM block 16 with '0xA1 0xA2 0xA3 0xB4 0xB5 0xB6 0xC7 0xC8'
-python3 pypn5180_15693.py WRITEBLK -o 16 -d A1A2A3B4B5B6C7C8
- 
-# Send a custom or proprietary command 0xA0, with manusacturer id 0x07 and data '0xA1 0xA2 0xA3 0xB4 0xB5 0xB6 0xC7 0xC8'
-python3 pypn5180_15693.py CUSTOM -c A0 -m 07 -d A1A2A3B4B5B6C7C8
-
-# Maintain power on for a sensor by RF without sending data
-python3 pypn5180_15693.py POWER
-
-# Dump a complete FRAM content, output file 'UUID-Date.dat' is created 
-python3 pypn5180_15693.py DUMP
-
-# FreestyleLibre Dump data FRAM part (output file: FREE-UUID-Date.dat)
-python3 pypn5180_15693.py FREEDUMP
-
- ```
 
 
 
