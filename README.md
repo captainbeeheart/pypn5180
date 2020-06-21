@@ -10,6 +10,7 @@ sudo apt install python3-pip libusb-1.0
 pip3 install wheel
 pip3 install setuptools
 pip3 install pyftdi
+pip3 install progressbar
 
 # create udev configuration file with following content:
 

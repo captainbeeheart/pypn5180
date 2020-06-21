@@ -6,11 +6,18 @@ import binascii
 import argparse
 import datetime
 import struct
+import progressbar
 
 
 def dumpFREE(binFile):
+class pbar():
+    def __init__(self):
+        self.pb = progressbar.ProgressBar().start()
 
     freedata = []
+    def updatepb(self, current_block, max_block):
+        k = int(100*current_block/max_block)
+        self.pb.update(k)
 
     with open(binFile, 'wb') as fid:
         print("destination file: %s" %binFile)
@@ -25,16 +32,22 @@ def dumpFREE(binFile):
                 print("Dump RF error")
                 return 
     print(freedata)
+    def finish(self):
+        self.pb.finish()
 
 
 def dumpFRAM(binFile):
     with open(binFile, 'wb') as fid:
+        pb = pbar()
         print("destination file: %s" %binFile)
         for k in range(255):
+            pb.updatepb(k, 255)
             data, errStr = isoIec15693.readSingleBlockCmd(k)
             if 'OK' in errStr:
                 hexdata = bytes(data)
                 fid.write(hexdata)
+        pb.finish()
+
 
 def getBlockSecurityStatus():
     for k in range(255):
