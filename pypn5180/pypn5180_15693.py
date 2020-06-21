@@ -9,29 +9,14 @@ import struct
 import progressbar
 
 
-def dumpFREE(binFile):
 class pbar():
     def __init__(self):
         self.pb = progressbar.ProgressBar().start()
 
-    freedata = []
     def updatepb(self, current_block, max_block):
         k = int(100*current_block/max_block)
         self.pb.update(k)
 
-    with open(binFile, 'wb') as fid:
-        print("destination file: %s" %binFile)
-        # Read FRAM first 43 blocks (344 bytes)
-        for k in range(43):
-            data, errStr = isoIec15693.readSingleBlockCmd(k)
-            if 'OK' in errStr:
-                hexdata = bytes(data)
-                freedata = freedata + data
-                fid.write(hexdata)
-            else:
-                print("Dump RF error")
-                return 
-    print(freedata)
     def finish(self):
         self.pb.finish()
 
@@ -61,7 +46,6 @@ def displayHelp():
     print("\nSupported commands :")
     print("Maintain RF Power On                                                 :  'pypn5180.py POWER'")
     print("Dump a complete FRAM (output file: UUID-Date.dat)                    :  'pypn5180.py DUMP'")
-    print("FreestyleLibre Dump data FRAM part (output file: FREE-UUID-Date.dat) :  'pypn5180.py FREEDUMP'")
     print("Read NFC block(x)                                                    :  'pypn5180.py READBLK -o x'")
     print("Write NFC block(x) 8 bits data=A1A2A3B4B5B6C7C8                      :  'pypn5180.py WRITEBLK -o x -d A1A2A3B4B5B6C7C8'")
     print("Read Security status block(x)                                        :  'pypn5180.py BLOCKSECURITY -o x'")
